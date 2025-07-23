@@ -1,6 +1,22 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+body::-webkit-scrollbar {
+  width: 12px;
+}
+body::-webkit-scrollbar-track {
+  background: transparent;
+  border-left: 1px solid #F8F8F8;
+}
+body::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border: 3px solid #ffffff;
+  border-radius: 10px;
+}
+body::-webkit-scrollbar-thumb:hover {
+  background: hsl(0, 0%, 70%);
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
