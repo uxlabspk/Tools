@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Copy, Check, RefreshCw } from 'lucide-react';
 
 type Task = 'summarize' | 'generate_ideas' | 'enhance_writing';
 
@@ -27,6 +27,15 @@ const DemoComponent = () => {
     const [result, setResult] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+    const [isCopied, setIsCopied] = useState(false);
+
+    const handleCopy = () => {
+        if (!result) return;
+        navigator.clipboard.writeText(result).then(() => {
+            setIsCopied(true);
+            setTimeout(() => setIsCopied(false), 2000);
+        });
+    };
 
     const handleGenerate = async () => {
         if (!inputText.trim()) {
@@ -93,15 +102,33 @@ const DemoComponent = () => {
 
             {error && <p className="text-red-500 mb-4">{error}</p>}
 
-            <div className="bg-gray-100 p-4 rounded-lg min-h-[10rem]">
+            <div className="bg-gray-100 p-4 rounded-lg min-h-[10rem] relative">
                 <h3 className="font-semibold text-gray-800 mb-2">Result:</h3>
-                <div className="prose max-w-none text-gray-700">
+                <div className="prose max-w-none text-gray-700 pb-16">
                     {result ? (
                         <ReactMarkdown>{result}</ReactMarkdown>
                     ) : (
                         <p>AI output will appear here...</p>
                     )}
                 </div>
+                {!isLoading && result && (
+                    <div className="absolute bottom-4 right-4 flex gap-2">
+                        <button
+                            onClick={handleCopy}
+                            className="bg-white/80 backdrop-blur-sm text-gray-600 hover:text-gray-900 p-2 rounded-lg transition-colors border border-gray-300 hover:bg-gray-200"
+                            title="Copy to clipboard"
+                        >
+                            {isCopied ? <Check className="h-5 w-5 text-green-500" /> : <Copy className="h-5 w-5" />}
+                        </button>
+                        <button
+                            onClick={handleGenerate}
+                            className="bg-white/80 backdrop-blur-sm text-gray-600 hover:text-gray-900 p-2 rounded-lg transition-colors border border-gray-300 hover:bg-gray-200"
+                            title="Regenerate"
+                        >
+                            <RefreshCw className="h-5 w-5" />
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );
