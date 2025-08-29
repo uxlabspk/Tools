@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { Loader2 } from 'lucide-react';
 
 type Task = 'summarize' | 'generate_ideas' | 'enhance_writing';
@@ -94,7 +95,13 @@ const DemoComponent = () => {
 
             <div className="bg-gray-100 p-4 rounded-lg min-h-[10rem]">
                 <h3 className="font-semibold text-gray-800 mb-2">Result:</h3>
-                <pre className="text-gray-700 whitespace-pre-wrap font-sans">{result || 'AI output will appear here...'}</pre>
+                <div className="prose max-w-none text-gray-700">
+                    {result ? (
+                        <ReactMarkdown>{result}</ReactMarkdown>
+                    ) : (
+                        <p>AI output will appear here...</p>
+                    )}
+                </div>
             </div>
         </div>
     );
