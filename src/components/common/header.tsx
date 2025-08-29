@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function Header() {
     return (
-        <header className="border-b gradient-bg backdrop-blur-sm sticky top-0 z-50">
+        <header className="gradient-bg backdrop-blur-sm sticky top-0 z-50">
             <div className="container mx-auto px-4 py-4 flex items-center justify-between">
                 <a href="" className="flex items-center space-x-2">
                     <Bot className={'h-8 w-8'} />
