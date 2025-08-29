@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Loader2, Copy, Check, RefreshCw } from 'lucide-react';
+import { Loader2, Copy, Check, RefreshCw, StopCircle } from 'lucide-react';
 
 type Task = 'summarize' | 'generate_ideas' | 'enhance_writing';
 
@@ -21,6 +21,8 @@ const taskDetails = {
     },
 };
 
+const DEMO_LIMIT = 5;
+
 const DemoComponent = () => {
     const [task, setTask] = useState<Task>('summarize');
     const [inputText, setInputText] = useState('');
@@ -28,6 +30,10 @@ const DemoComponent = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [isCopied, setIsCopied] = useState(false);
+    const [demoCount, setDemoCount] = useState(0);
+    const abortControllerRef = useRef<AbortController | null>(null);
+
+    const isLimitReached = demoCount >= DEMO_LIMIT;
 
     const handleCopy = () => {
         if (!result) return;
@@ -37,7 +43,17 @@ const DemoComponent = () => {
         });
     };
 
+    const handleStop = () => {
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+        }
+    };
+
     const handleGenerate = async () => {
+        if (isLimitReached) {
+            setError(`You have reached the demo limit of ${DEMO_LIMIT} generations.`);
+            return;
+        }
         if (!inputText.trim()) {
             setError('Please enter some text.');
             return;
@@ -45,6 +61,9 @@ const DemoComponent = () => {
         setIsLoading(true);
         setError('');
         setResult('');
+
+        const controller = new AbortController();
+        abortControllerRef.current = controller;
 
         try {
             const response = await fetch('/api/ai', {
@@ -54,6 +73,7 @@ const DemoComponent = () => {
                     task,
                     context: { text: inputText },
                 }),
+                signal: controller.signal,
             });
 
             if (!response.ok || !response.body) {
@@ -70,10 +90,14 @@ const DemoComponent = () => {
                 const chunk = decoder.decode(value);
                 setResult((prev) => prev + chunk);
             }
+            setDemoCount(prev => prev + 1);
         } catch (err: any) {
-            setError(err.message);
+            if (err.name !== 'AbortError') {
+                setError(err.message);
+            }
         } finally {
             setIsLoading(false);
+            abortControllerRef.current = null;
         }
     };
 
@@ -83,23 +107,44 @@ const DemoComponent = () => {
                 <select
                     value={task}
                     onChange={(e) => setTask(e.target.value as Task)}
-                    className="w-full sm:w-1/3 px-4 py-3 rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full sm:w-1/3 px-4 py-3 rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+                    disabled={isLimitReached}
                 >
                     <option value="summarize">Summarize Text</option>
                     <option value="generate_ideas">Generate Ideas</option>
                     <option value="enhance_writing">Enhance Writing</option>
                 </select>
-                <button
-                    onClick={handleGenerate}
-                    disabled={isLoading}
-                    className="w-full sm:w-auto bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-300 disabled:bg-blue-400 disabled:cursor-not-allowed flex items-center justify-center"
-                >
-                    {isLoading ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Generating...</> : 'Generate'}
-                </button>
+                {isLoading ? (
+                    <button
+                        onClick={handleStop}
+                        className="w-full sm:w-auto bg-red-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-red-700 transition-all duration-300 flex items-center justify-center"
+                    >
+                        <StopCircle className="mr-2 h-5 w-5" /> Stop Generating
+                    </button>
+                ) : (
+                    <button
+                        onClick={handleGenerate}
+                        disabled={isLimitReached}
+                        className="w-full sm:w-auto bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-300 disabled:bg-blue-400 disabled:cursor-not-allowed flex items-center justify-center"
+                    >
+                        Generate
+                    </button>
+                )}
             </div>
 
-            <textarea value={inputText} onChange={(e) => setInputText(e.target.value)} placeholder={taskDetails[task].placeholder} className="w-full h-40 p-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4" />
+            <textarea
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                placeholder={isLimitReached ? "You've reached the demo limit." : taskDetails[task].placeholder}
+                className="w-full h-40 p-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4 disabled:bg-gray-100"
+                disabled={isLimitReached}
+            />
 
+            {isLimitReached && !error && (
+                <p className="text-yellow-600 bg-yellow-50 p-3 rounded-lg mb-4">
+                    You have used {demoCount}/{DEMO_LIMIT} free generations. Please sign up to continue.
+                </p>
+            )}
             {error && <p className="text-red-500 mb-4">{error}</p>}
 
             <div className="bg-gray-100 p-4 rounded-lg min-h-[10rem] relative">
@@ -122,7 +167,8 @@ const DemoComponent = () => {
                         </button>
                         <button
                             onClick={handleGenerate}
-                            className="bg-white/80 backdrop-blur-sm text-gray-600 hover:text-gray-900 p-2 rounded-lg transition-colors border border-gray-300 hover:bg-gray-200"
+                            disabled={isLimitReached}
+                            className="bg-white/80 backdrop-blur-sm text-gray-600 hover:text-gray-900 p-2 rounded-lg transition-colors border border-gray-300 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                             title="Regenerate"
                         >
                             <RefreshCw className="h-5 w-5" />
