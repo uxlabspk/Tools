@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import React from 'react';
 import { Brain, BookOpen, Search, Lightbulb, Users, Zap, ArrowRight, CheckCircle, Star, Menu, X, Mail, Phone, MapPin, Twitter, Github, Linkedin } from 'lucide-react';
-import DemoComponent from '../components/demo-component';
+import DemoComponent from '../components/demo/demo';
 
 const Home = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
