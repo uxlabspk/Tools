@@ -6,7 +6,7 @@ const MODEL = 'sailor2:1b';
 
 // Define schemas for request validation
 const requestSchema = z.object({
-  task: z.enum(['summarize', 'generate_ideas', 'enhance_writing']),
+  task: z.enum(['summarize', 'generate_ideas', 'enhance_writing', 'explain']),
   context: z.object({
     text: z.string().min(10, { message: "Text must be at least 10 characters long." }),
   }),
@@ -21,6 +21,8 @@ const createPrompt = (task: string, text: string): string => {
       return `You are a creative and knowledgeable research advisor. Based on the following topic, generate three innovative research questions or project ideas. For each idea, provide a brief rationale.\n\nTopic:\n"""\n${text}\n"""\n\nResearch Ideas:`;
     case 'enhance_writing':
       return `You are an expert academic editor. Improve the clarity, coherence, and academic tone of the following paragraph without changing its core meaning. Identify and correct any grammatical errors or awkward phrasing.\n\nOriginal Text:\n"""\n${text}\n"""\n\nEnhanced Text:`;
+    case 'explain':
+      return `you are an export teacher. Teach me in simple words my query is:\n\nText:\n"""\n${text}\n"""`
     default:
       throw new Error('Invalid task');
   }

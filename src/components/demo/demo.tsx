@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Loader2, Copy, Check, RefreshCw, StopCircle } from 'lucide-react';
 
-type Task = 'summarize' | 'generate_ideas' | 'enhance_writing';
+type Task = 'summarize' | 'generate_ideas' | 'enhance_writing' | 'explain';
 
 const taskDetails = {
     summarize: {
@@ -18,6 +18,10 @@ const taskDetails = {
     enhance_writing: {
         label: 'Enhance Writing',
         placeholder: 'Paste a sentence or paragraph you want to improve...',
+    },
+    explain: {
+        label: 'explain',
+        placeholder: 'Enter a paragraph for explanation....',
     },
 };
 
@@ -113,6 +117,7 @@ const DemoComponent = () => {
                     <option value="summarize">Summarize Text</option>
                     <option value="generate_ideas">Generate Ideas</option>
                     <option value="enhance_writing">Enhance Writing</option>
+                    <option value="explain">Explain</option>
                 </select>
                 {isLoading ? (
                     <button
