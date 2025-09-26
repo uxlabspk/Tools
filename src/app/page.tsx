@@ -6,12 +6,9 @@ import {
     Folder,
     FileText,
     Share2,
-    History as HistoryIcon, // Aliased import
+    History as HistoryIcon,
     ThumbsUp,
     Settings,
-    Paperclip,
-    Smile,
-    Send,
     ArrowUp,
     Download,
     ExternalLink,
@@ -24,7 +21,6 @@ import SharedWithMe from './components/SharedWithMe';
 import History from './components/History';
 
 const ChatInterface = () => {
-    const [message, setMessage] = useState('');
     const [activePage, setActivePage] = useState('Chat With AI');
 
     const sidebarItems = [
@@ -142,32 +138,6 @@ const ChatInterface = () => {
 
                 {/* Chat content */}
                 {renderContent()}
-
-                {/* Message input */}
-                <div className="border-t border-gray-200 p-4 bg-white">
-                    <div className="max-w-4xl mx-auto">
-                        <div className="relative">
-                            <input
-                                type="text"
-                                value={message}
-                                onChange={(e) => setMessage(e.target.value)}
-                                placeholder="Write your message..."
-                                className="w-full pr-20 pl-4 py-3 text-base rounded-full border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                            />
-                            <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-2">
-                                <button className="p-1.5 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors">
-                                    <Paperclip className="w-4 h-4" />
-                                </button>
-                                <button className="p-1.5 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors">
-                                    <Smile className="w-4 h-4" />
-                                </button>
-                                <button className="p-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-full transition-colors">
-                                    <Send className="w-4 h-4" />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     );
