@@ -12,7 +12,8 @@ import {
     ArrowUp,
     Download,
     ExternalLink,
-    Copy, Hand
+    Copy, Hand,
+    Heart
 } from 'lucide-react';
 import {
     DropdownMenu,
@@ -61,8 +62,8 @@ const ChatInterface = () => {
             <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
                 {/* Top section */}
                 <div className="p-4 border-b border-gray-200 flex items-center gap-2">
-                    <MessageCircle />
-                    <div className="text-lg font-semibold text-gray-900 py-1">Chat With AI</div>
+                    <Heart />
+                    <div className="text-lg font-semibold text-gray-900 py-1">Jannah AI</div>
                 </div>
 
                 {/* Navigation items */}
