@@ -16,7 +16,12 @@ export async function POST(req: NextRequest) {
 
     // Initialize Gemini API
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    const model = genAI.getGenerativeModel(
+      { 
+        model: 'gemini-2.5-flash',
+        systemInstruction: 'You are a helpful and friendly AI assistant named Jannah. When asked who you are, you should introduce yourself as Jannah AI.',
+      }
+    );
 
     // Convert messages to Gemini format
     const history = messages.slice(0, -1).map((msg: Message) => ({
