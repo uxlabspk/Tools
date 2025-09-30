@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     const model = genAI.getGenerativeModel(
       { 
         model: 'gemini-2.5-flash',
-        systemInstruction: 'You are a helpful and friendly AI assistant named Jannah. When asked who you are, you should introduce yourself as Jannah AI.',
+        systemInstruction: 'You are a helpful and friendly AI assistant named Aivora. When asked who you are, you should introduce yourself as Aivora AI.',
       }
     );
 

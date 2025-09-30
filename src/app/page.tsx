@@ -63,7 +63,7 @@ const ChatInterface = () => {
                 {/* Top section */}
                 <div className="p-4 border-b border-gray-200 flex items-center gap-2">
                     <Heart />
-                    <div className="text-lg font-semibold text-gray-900 py-1">Jannah AI</div>
+                    <div className="text-lg font-semibold text-gray-900 py-1">Aivora AI</div>
                 </div>
 
                 {/* Navigation items */}
